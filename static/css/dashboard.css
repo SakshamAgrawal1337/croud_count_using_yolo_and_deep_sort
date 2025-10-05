@@ -1,0 +1,216 @@
+
+    body {
+      margin: 0;
+      background-color: #f4f6f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    #container {
+      display: flex;
+      min-height:90vh;
+      /* height: 89vh; */
+      flex-direction: column;
+    }
+
+    header {
+      flex-shrink: 0;
+    }
+
+    footer {
+      background-color: #343a40;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      flex-shrink: 0;
+    }
+
+    #container > div.content {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+    }
+
+    aside {
+      width: 250px;
+      background: rgba(21, 36, 53, 0.95);
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      overflow-x: visible;
+      overflow-y: auto;
+      transition: width 0.3s ease, padding 0.3s ease;
+      position: relative;
+      /* height: 100vh */
+    }
+
+
+    aside.collapsed {
+      width: 50px;
+      padding: 20px 10px;
+      overflow-x: visible;
+     
+    }
+
+
+
+    aside .sidebar-content {
+      display: block;
+    }
+
+    aside.collapsed .sidebar-content {
+      display: none;
+    }
+
+    aside .sidebar-toggle {
+      display: none;
+    }
+
+    aside.collapsed .sidebar-toggle {
+      display: block;
+      text-align: center;
+      margin-top: auto;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: auto;
+       cursor:pointer;
+    }
+
+    aside h2 {
+      margin-top: 0;
+    }
+    
+
+    
+  /* Button ko hamesha top right pe rakhen */
+  #toggleSidebarBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transition: transform 0.6s ease;
+    width: 30px;
+  }
+
+  /* Jab sidebar collapse ho to button ko rotate karen */
+  aside.collapsed #toggleSidebarBtn {
+    transform: rotate(180deg);  /* Button ka icon rotate kar ke open dikhe */
+  }
+
+  
+
+    #feedList {
+      list-style: none;
+      padding: 0;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    #feedList li {
+      padding: 10px 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+    }
+
+    #feedList li:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    #feedList li.selected {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #ecf0f1;
+    }
+
+    nav button {
+      margin-right: 8px;
+      padding: 8px 15px;
+      background: #3498db;
+      border: none;
+      color: white;
+      border-radius: 4px;
+    }
+
+    nav button.active {
+      background: #2980b9;
+    }
+
+    .tab-content {
+      margin-top: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    #videoContainer,
+    #previewVideoContainer,
+    #analysisVideoContainer {
+      position: relative;
+      width: 640px;
+      height: 360px;
+      background: black;
+    }
+
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 640px;
+      height: 360px;
+      background: black;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    #canvas {
+      pointer-events: auto;
+    }
+
+    #zonesDropdown {
+      margin-top: 10px;
+      padding: 5px;
+      width: 200px;
+    }
+    .tabBtn.active {
+  text-decoration: underline;
+  font-weight: 600;
+}
+/* 
+.alert-warning-text {
+  color: #856404;
+  background-color: rgba(255, 243, 205, 0.7);
+  border-color: rgba(255, 234, 135, 0.7);
+  padding: 0.375rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  display: block;
+  margin-bottom: 0.5rem;
+} */
+
+/* .alert-danger-text {
+  color: #721c24;
+  background-color: rgba(248, 215, 218, 0.7);
+  border-color: rgba(245, 198, 203, 0.7);
+  padding: 0.375rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}  */

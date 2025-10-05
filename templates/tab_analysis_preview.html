@@ -1,0 +1,72 @@
+<div class="container mt-4">
+  <h2>📊 Real-time Crowd Dashboard</h2>
+
+  <!-- Alert Banner -->
+  <!-- <div id="alerts" class="alert alert-success mt-3">No alerts 🚀</div> -->
+  <div id="alertContainer" style="display:none;">
+    <div class="alert alert-danger" role="alert">
+      <h5>⚠️ ALERT: Zone Population Exceeded!</h5>
+              <div id="alertMessage"></div>
+            </div>
+  </div>
+  <!-- Row for Gauge & Pie Charts -->
+  <!-- <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm rounded-4 h-100">
+        <h5>Gauge Chart - Total Occupancy</h5>
+        <div id="gaugeChart" style="height:300px;"></div>
+      </div>
+    </div> -->
+  
+    <!-- <div class="col-md-6">
+      <div class="card p-3 shadow-sm rounded-4 h-100">
+        <h5>Pie Chart - Zone Distribution</h5>
+        <div id="pieChart" style="height:300px;"></div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Row for Bar Chart -->
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm rounded-4 h-100">
+        <h5>Bar Chart - Zone-wise Population</h5>
+        <div id="barChart" style="height:300px;"></div>
+      </div>
+    </div>
+  <!-- </div> -->
+
+  <!-- Row for Line Chart -->
+  <!-- <div class="row mt-4"> -->
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm rounded-4 h-100">
+        <h5>Line Chart - Total Occupancy Over Time</h5>
+        <div id="lineChart" style="height:300px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row for Heatmap -->
+  <!-- <div class="row mt-4">
+    <div class="col-12">
+      <div class="card p-3 shadow-sm rounded-4 h-100">
+        <h5>Heatmap - Zone Intensity</h5>
+        <div id="heatmap" style="width: 100%; height: 400px; position: relative;"></div>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="card p-3 mt-4 shadow-sm rounded-4 h-100">
+    <h5>Curve Chart - Zone-wise Population Over Time</h5>
+    <div id="curveChart" style="height: 300px;"></div>
+  </div>
+
+  <!-- <div class="card p-3 mt-4 shadow-sm rounded-4 h-100">
+    <h5>Trend Chart - Zone Population Over Time</h5>
+    <div id="trendChart" style="height: 300px;"></div>
+  </div> -->
+
+</div>
+
+<!-- Plotly.js for charts -->
+

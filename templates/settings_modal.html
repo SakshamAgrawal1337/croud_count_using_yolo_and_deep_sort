@@ -1,0 +1,29 @@
+<!-- Settings Modal -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light" style="opacity: 0.9;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="settingsModalLabel">Alert Threshold Settings</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="thresholdForm">
+          <div class="mb-3">
+            <label for="totalThreshold" class="form-label">Total Frame Threshold</label>
+            <input type="number" class="form-control bg-secondary text-light" id="totalThreshold" min="1" max="100" value="10">
+            <div class="form-text">Alert if total people > this value.</div>
+          </div>
+          <div class="mb-3">
+            <label for="zoneThreshold" class="form-label">Zone Threshold</label>
+            <input type="number" class="form-control bg-secondary text-light" id="zoneThreshold" min="1" max="50" value="6">
+            <div class="form-text">Alert if any zone people > this value.</div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveThresholds">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>

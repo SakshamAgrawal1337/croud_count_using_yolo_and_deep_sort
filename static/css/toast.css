@@ -1,0 +1,40 @@
+/* Custom Toast Styles */
+.toast-container {
+    z-index: 9999;
+}
+
+.toast.custom-toast {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: none;
+    min-width: 300px;
+}
+
+.toast.custom-toast .toast-body {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.toast.custom-toast.bg-success {
+    background-color: #28a745 !important;
+}
+
+.toast.custom-toast.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.toast.custom-toast.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+}
+
+.toast.custom-toast.bg-info {
+    background-color: #3498db !important;
+}
+
+/* Position adjustments if needed */
+.toast-container.position-fixed.top-0.end-0 {
+    top: 20px !important;
+    right: 20px !important;
+}
