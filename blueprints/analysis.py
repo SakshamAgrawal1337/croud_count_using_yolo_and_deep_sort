@@ -4,8 +4,6 @@ from yolo_service import start_analysis, stop_analysis, get_counts, get_detectio
 from helpers import scale_zones, login_required
 import cv2, json
 import io
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 
 analysis_bp = Blueprint("analysis", __name__, url_prefix="/api/feeds")
 
@@ -64,46 +62,23 @@ def report(feed_id):
 
     return render_template("analysis_report.html", feed=feed, counts=counts, detections=detections)
 
-@analysis_bp.route("/<int:feed_id>/download_report")
-@login_required
-def download_report(feed_id):
-    feed = Feed.query.get(feed_id)
-    if not feed:
-        return "Feed not found", 404
+# @analysis_bp.route("/<int:feed_id>/download_report")
+# @login_required
+# def download_report(feed_id):
+#     feed = Feed.query.get(feed_id)
+#     if not feed:
+#         return "Feed not found", 404
 
-    counts = get_counts(feed_id)
-    detections = get_detections(feed_id)
+#     counts = get_counts(feed_id)
+#     detections = get_detections(feed_id)
 
-    buffer = io.BytesIO()
-    p = canvas.Canvas(buffer, pagesize=letter)
-    width, height = letter
+#     html_content = render_template("analysis_report.html", feed=feed, counts=counts, detections=detections)
 
-    p.setFont("Helvetica-Bold", 16)
-    p.drawString(50, height - 50, f"Analysis Report for Feed: {feed.name}")
+#     buffer = io.BytesIO()
+#     HTML(string=html_content, base_url=request.url_root).write_pdf(buffer)
+#     buffer.seek(0)
 
-    p.setFont("Helvetica", 12)
-    y = height - 80
-    p.drawString(50, y, "Counts:")
-    y -= 20
-    for zone, count in counts.items():
-        p.drawString(60, y, f"{zone}: {count}")
-        y -= 15
-
-    y -= 10
-    p.drawString(50, y, "Detections:")
-    y -= 20
-    for detection in detections:
-        p.drawString(60, y, f"{detection}")
-        y -= 15
-        if y < 50:
-            p.showPage()
-            y = height - 50
-
-    p.showPage()
-    p.save()
-    buffer.seek(0)
-
-    return send_file(buffer, as_attachment=True, download_name=f"{feed.name}_analysis_report.pdf", mimetype="application/pdf")
+#     return send_file(buffer, as_attachment=True, download_name=f"{feed.name}_analysis_report.pdf", mimetype="application/pdf")
 
 @analysis_bp.route("/<int:feed_id>/toggle_deepsort", methods=["POST"])
 def toggle_deepsort_endpoint(feed_id):

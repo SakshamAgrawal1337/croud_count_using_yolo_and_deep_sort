@@ -96,6 +96,20 @@ function setupUI() {
       return;
     }
 
+    // Validate video file before creating feed
+    if (type === 'video') {
+      const file = videoUploadInput.files[0];
+      if (!file) {
+        if (window.toast) window.toast.error('Please select a video file'); else alert('Please select a video file');
+        return;
+      }
+      if (!file.type.startsWith('video/')) {
+        if (window.toast) window.toast.error('Please upload a valid video file.'); else alert('Please upload a valid video file.');
+        videoUploadInput.value = ''; // Clear the input
+        return;
+      }
+    }
+
     // Create feed in backend
     const res = await fetch('/api/feeds', {
       method: 'POST',
@@ -113,14 +127,6 @@ function setupUI() {
     // Upload video if video feed
     if (type === 'video') {
       const file = videoUploadInput.files[0];
-    if (!file) {
-      if (window.toast) window.toast.error('Please select a video file'); else alert('Please select a video file');
-      return;
-    }
-      if (!file.type.startsWith('video/')) {
-    if (window.toast) window.toast.error('Please upload a valid video file.'); else alert('Please upload a valid video file.');
-    videoUploadInput.value = ''; // Clear the input
-    return;}
       const formData = new FormData();
       formData.append('video', file);
       const upRes = await fetch(`/api/feeds/${feed.id}/upload_video`, {
@@ -128,10 +134,12 @@ function setupUI() {
         body: formData
       });
       const upData = await upRes.json();
-    if (upData.status !== 'success') {
-      if (window.toast) window.toast.error('Failed to upload video'); else alert('Failed to upload video');
-      return;
-    }
+      if (upData.status !== 'success') {
+        // Delete the feed since upload failed
+        await fetch(`/api/feeds/${feed.id}`, { method: 'DELETE' });
+        if (window.toast) window.toast.error('Failed to upload video'); else alert('Failed to upload video');
+        return;
+      }
       feed.video_filename = upData.filename;
     }
 
@@ -151,17 +159,30 @@ function setupUI() {
     feedList.innerHTML = '';
     feeds.forEach(feed => {
       const li = document.createElement('li');
-      li.textContent = feed.name + (feed.type === 'camera' ? ' (Camera)' : ' (Video)');
+      li.textContent = feed.name + (feed.type === 'camera' ? '  📸' : '  📹');
       if (feed.id === selectedFeedId) li.classList.add('selected');
       li.onclick = () => selectFeed(feed.id);
 
       const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = 'Delete';
-      deleteBtn.className = 'btn btn-danger btn-sm';
+      deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can" style="color: #c23546;"></i>';
+      deleteBtn.className = ' btn-sm d-flex justify-content-center align-items-center';
       deleteBtn.style.marginLeft = '10px';
+      deleteBtn.style.backgroundColor = 'transparent';
+      deleteBtn.style.borderColor = 'transparent';
+      deleteBtn.style.borderWidth = '0';
       deleteBtn.onclick = (e) => {
         e.stopPropagation();
-        deleteFeed(feed.id);
+        // Add bounce animation class
+        const icon = deleteBtn.querySelector('i');
+        if (icon) {
+          icon.classList.add('fa-bounce');
+          setTimeout(() => {
+            icon.classList.remove('fa-bounce');
+            deleteFeed(feed.id);
+          }, 1000); // animation duration 1 second
+        } else {
+          deleteFeed(feed.id);
+        }
       };
       li.appendChild(deleteBtn);
 
@@ -192,6 +213,7 @@ function setupUI() {
         zones = [];
         currentFeedTitle.textContent = '';
         feedTabs.style.display = 'none';
+        redraw();
       }
       renderFeedList();
       if (window.toast) window.toast.success('Successfully, Feed deleted!'); else alert('Successfully, Feed deleted!');
@@ -246,13 +268,12 @@ function setupUI() {
         canvas.style.display = 'block';
       }
     } else if (selectedFeed.type === 'camera') {
+      canvas.style.display = 'block';
       if (cameraPreviewActive) {
         startCameraStream();
-        canvas.style.display = 'block';
       } else {
         clearVideo();
         showPreviewDisabledMessage();
-        canvas.style.display = 'none';
       }
     }
 
@@ -450,7 +471,56 @@ function drawTempRectangle() {
   // Make redraw function globally accessible
   window.redraw = function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (!(selectedFeed && selectedFeed.type === 'camera' && !cameraPreviewActive)) {
+    if (!selectedFeedId) {
+      // Draw a semi-transparent background box with rounded corners and shadow
+      const boxWidth = 500;
+      const boxHeight = 110;
+      const boxX = (canvas.width - boxWidth) / 2;
+      const boxY = (canvas.height - boxHeight) / 2;
+      const radius = 20;
+
+      // Shadow
+      ctx.shadowColor = 'rgba(124, 131, 132, 0.5)';
+      ctx.shadowBlur = 22;
+      ctx.shadowOffsetX = 3;
+      ctx.shadowOffsetY = 3;
+
+      // Draw rounded rectangle
+      ctx.fillStyle = 'rgba(16, 16, 16, 0.9)';
+      ctx.beginPath();
+      ctx.moveTo(boxX + radius, boxY);
+      ctx.lineTo(boxX + boxWidth - radius, boxY);
+      ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + radius);
+      ctx.lineTo(boxX + boxWidth, boxY + boxHeight - radius);
+      ctx.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - radius, boxY + boxHeight);
+      ctx.lineTo(boxX + radius, boxY + boxHeight);
+      ctx.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - radius);
+      ctx.lineTo(boxX, boxY + radius);
+      ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+      ctx.closePath();
+      ctx.fill();
+
+      // Border
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+
+      // Reset shadow
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      // Draw the text
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 22px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Please select a feed to start drawing zones.', canvas.width / 2, canvas.height / 2 + 5);
+
+      // Add an icon or emoji
+      ctx.font = '35px Arial';
+      ctx.fillText('📹', canvas.width / 2, canvas.height / 2 - 25);
+    } else {
       drawZones(ctx);
     }
   }
@@ -518,18 +588,32 @@ function drawTempRectangle() {
     if (!confirm(`Delete zone "${zones[idx].label}"?`)) return;
 
     const zone = zones[idx];
+    if (!zone.id) {
+      // Local zone not saved yet, just remove from array
+      zones.splice(idx, 1);
+      updateZonesDropdown();
+      redraw();
+      if (window.toast) window.toast.success('Zone deleted successfully.'); else alert('Zone deleted successfully.');
+      return;
+    }
+
     try {
       const res = await fetch(`/api/feeds/${selectedFeedId}/zones/${zone.id}`, {
         method: 'DELETE'
       });
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Server returned non-JSON response');
+      }
       const data = await res.json();
-      if (data.status === 'success') {
+      if (res.ok && data.status === 'success') {
         zones.splice(idx, 1);
         updateZonesDropdown();
         redraw();
         if (window.toast) window.toast.success('Zone deleted successfully.'); else alert('Zone deleted successfully.');
       } else {
-        if (window.toast) window.toast.error('Failed to delete zone'); else alert('Failed to delete zone');
+        const errorMsg = data.error || 'Failed to delete zone';
+        if (window.toast) window.toast.error(errorMsg); else alert(errorMsg);
       }
     } catch (error) {
       if (window.toast) window.toast.error('Error deleting zone: ' + error.message); else alert('Error deleting zone: ' + error.message);
@@ -608,37 +692,43 @@ function drawTempRectangle() {
     }
 
     if (startAnalysisBtn && stopAnalysisBtn) {
-      const toggleDeepsortBtn = document.getElementById('toggleDeepsortBtn');
-      if (toggleDeepsortBtn) {
-        toggleDeepsortBtn.onclick = async () => {
-          if (!selectedFeedId) {
-            if (window.toast) window.toast.error('Select a feed first'); else alert('Select a feed first');
-            return;
-          }
-          const enabled = toggleDeepsortBtn.classList.toggle('active');
-          try {
-            const res = await fetch(`/api/feeds/${selectedFeedId}/toggle_deepsort`, {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify({enabled})
-            });
-            const data = await res.json();
-            if (data.status !== 'success') {
-              if (window.toast) window.toast.error('Failed to toggle DeepSort'); else alert('Failed to toggle DeepSort');
-              toggleDeepsortBtn.classList.toggle('active'); // revert toggle
-            }
-          } catch (error) {
-            if (window.toast) window.toast.error('Error toggling DeepSort: ' + error.message); else alert('Error toggling DeepSort: ' + error.message);
-            toggleDeepsortBtn.classList.toggle('active'); // revert toggle
-          }
-        };
-      }
+      // const toggleDeepsortBtn = document.getElementById('toggleDeepsortBtn');
+      // if (toggleDeepsortBtn) {
+      //   toggleDeepsortBtn.onclick = async () => {
+      //     if (!selectedFeedId) {
+      //       if (window.toast) window.toast.error('Select a feed first'); else alert('Select a feed first');
+      //       return;
+      //     }
+      //     const enabled = toggleDeepsortBtn.classList.toggle('active');
+      //     try {
+      //       const res = await fetch(`/api/feeds/${selectedFeedId}/toggle_deepsort`, {
+      //         method: 'POST',
+      //         headers: {'Content-Type': 'application/json'},
+      //         body: JSON.stringify({enabled})
+      //       });
+      //       const data = await res.json();
+      //       if (data.status !== 'success') {
+      //         if (window.toast) window.toast.error('Failed to toggle DeepSort'); else alert('Failed to toggle DeepSort');
+      //         toggleDeepsortBtn.classList.toggle('active'); // revert toggle
+      //       }
+      //     } catch (error) {
+      //       if (window.toast) window.toast.error('Error toggling DeepSort: ' + error.message); else alert('Error toggling DeepSort: ' + error.message);
+      //       toggleDeepsortBtn.classList.toggle('active'); // revert toggle
+      //     }
+      //   };
+      // }
 
-      startAnalysisBtn.onclick = () => {
+      startAnalysisBtn.onclick = async () => {
         if (!selectedFeedId) {
           if (window.toast) window.toast.error('Select a feed first'); else alert('Select a feed first');
           return;
         }
+
+        // Ensure camera preview is active for camera feeds before starting analysis
+        if (selectedFeed.type === 'camera' && cameraPreviewActive) {
+           stopCameraPreview();
+        }
+
         window.isAnalysisRunning = true;
         startYoloAnalysis(selectedFeedId);
         startAnalysisBtn.style.display = 'none';
@@ -712,16 +802,22 @@ function drawTempRectangle() {
       if (selectedFeedId) {
         stopYoloAnalysis(selectedFeedId);
       }
-      // Clear session and redirect to login
-      fetch('/logout', { method: 'POST' })
-        .then(() => {
-          window.location.href = '/login';
-        })
-        .catch(() => {
-          window.location.href = '/login';
-        });
+      // Show sign out toast
+      if (window.toast) window.toast.success('Signing out successfully');
+      // Clear session and redirect to login after a short delay
+      setTimeout(() => {
+        fetch('/logout', { method: 'POST' })
+          .then(() => {
+            window.location.href = '/login';
+          })
+          .catch(() => {
+            window.location.href = '/login';
+          });
+      }, 100);
     };
   }
+
+  redraw();
 }
 
 // Placeholder functions

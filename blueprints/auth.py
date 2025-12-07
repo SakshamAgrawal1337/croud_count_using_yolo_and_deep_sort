@@ -108,6 +108,6 @@ def admin_login():
 
 @auth_bp.route("/logout")
 def logout():
+    flash("Sign out successfully", "success")
     session.clear()
-    flash("Logged out!")
     return redirect(url_for("auth.login"))

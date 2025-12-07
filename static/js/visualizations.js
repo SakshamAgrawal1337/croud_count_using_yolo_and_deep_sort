@@ -110,7 +110,6 @@ function drawAnalysisZones(showLabels = true) {
       analysisCtx.font = '16px Arial';
       analysisCtx.fillText(zone.label, coords.topleft[0], coords.topleft[1] - 5);
     }
-
     // Count (if available)
     console.log(`Checking count for zone "${zone.label}":`, crowdCounts[zone.label]);
     if (crowdCounts[zone.label] !== undefined && crowdCounts[zone.label] !== null) {
@@ -124,7 +123,6 @@ function drawAnalysisZones(showLabels = true) {
     }
   });
 }
-
 // Shared alert function for both analysis and preview tabs
 function updateAlerts(total, zones, alertContainerId = 'alerts', alertMessageId = null) {
   const alertDiv = document.getElementById(alertContainerId);

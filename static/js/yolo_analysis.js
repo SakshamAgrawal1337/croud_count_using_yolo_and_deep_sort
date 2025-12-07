@@ -99,15 +99,20 @@ if (generateReportBtn) {
     //   drawDetections(detections);
     // }
 
+
+
+    // Update alerts for analysis tab
+    updateAlerts(counts.total || 0, crowdCounts, 'alertContainer', 'alertMessage');
+
+    // Redraw zones with updated counts
+    drawAnalysisZones();
+
     // Draw heatmap if enabled
     if (heatmapEnabled) {
       drawHeatmap();
     }
 
-    // Update alerts for analysis tab
-    updateAlerts(counts.total || 0, crowdCounts, 'alertContainer', 'alertMessage');
-
-        // Hide loading if analysis has started producing data
+    // Hide loading if analysis has started producing data
     if (!analysisStarted && (counts.total > 0 || Object.keys(crowdCounts).some(key => crowdCounts[key] > 0))) {
       analysisStarted = true;
       const loadingDiv = document.getElementById("analysisLoading");

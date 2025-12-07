@@ -31,8 +31,11 @@ def feeds():
 
 
 @feeds_bp.route("/<int:feed_id>/upload_video", methods=["POST"])
+@login_required
 def upload_video(feed_id):
-    feed = Feed.query.get_or_404(feed_id)
+    feed = Feed.query.filter_by(id=feed_id).first()
+    if not feed:
+        return jsonify({"error": "Feed not found"}), 404
     file = request.files.get("video")
     if not file or file.filename == "":
         return jsonify({"error": "No video file"}), 400
@@ -47,6 +50,7 @@ def upload_video(feed_id):
 
 
 @feeds_bp.route("/<int:feed_id>/zones", methods=["GET", "POST"])
+@login_required
 def zones(feed_id):
     if request.method == "GET":
         zones = Zone.query.filter_by(feed_id=feed_id).all()
@@ -61,15 +65,21 @@ def zones(feed_id):
 
 
 @feeds_bp.route("/<int:feed_id>/zones/<int:zone_id>", methods=["DELETE"])
+@login_required
 def delete_zone(feed_id, zone_id):
-    zone = Zone.query.filter_by(id=zone_id, feed_id=feed_id).first_or_404()
+    zone = Zone.query.filter_by(id=zone_id, feed_id=feed_id).first()
+    if not zone:
+        return jsonify({"error": "Zone not found"}), 404
     db.session.delete(zone)
     db.session.commit()
     return jsonify({"status": "success"})
 
 @feeds_bp.route("/<int:feed_id>", methods=["DELETE"])
+@login_required
 def delete_feed(feed_id):
-    feed = Feed.query.get_or_404(feed_id)
+    feed = Feed.query.filter_by(id=feed_id).first()
+    if not feed:
+        return jsonify({"error": "Feed not found"}), 404
     # Delete associated zones first
     Zone.query.filter_by(feed_id=feed_id).delete()
     db.session.delete(feed)

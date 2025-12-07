@@ -152,7 +152,7 @@ def run_analysis(feed_id, video_source, zones, zone_labels):
         # Draw zones on the frame
         for i, (zx1, zy1, zx2, zy2) in enumerate(zones):
             cv2.rectangle(frame, (zx1, zy1), (zx2, zy2), (0, 255, 0), 2)  # Green color for zones
-            cv2.putText(frame, zone_labels[i], (zx1, zy1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            # cv2.putText(frame, str(zone_counts[i]), (zx1, zy1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)  # Red color for live count
 
         # Encode frame to JPEG and enqueue for streaming
         _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
@@ -263,3 +263,4 @@ def process_frame(image_data, zones, labels):
 
     counts = {labels[i]: count for i, count in enumerate(zone_counts)}
     return counts, detections
+

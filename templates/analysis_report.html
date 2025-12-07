@@ -1,36 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis Report - {{ feed.name }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analysis Report - {{ feed.name }}</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f5f7fa;
+    }
+.creative-btn {
+  background: linear-gradient(45deg, #383854, #1E2F2F, #535557);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4), 0 0 10px rgba(255,255,255,0.05) inset;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover effects: lift + glow + gradient shift */
+.creative-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6), 0 0 15px rgba(255,255,255,0.15) inset;
+  background: linear-gradient(45deg, #535557, #1E2F2F, #1E1E2F);
+  color: #fff;
+}
+
+/* Active effect: subtle press */
+.creative-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4), 0 0 10px rgba(255,255,255,0.05) inset;
+}
+
+/* Optional animated gradient effect */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.creative-btn.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+}
+
+
+    @media print {
+      .no-print { display: none; }
+    }
+
+    .report-header {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .section-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    h2 {
+      border-bottom: 2px solid #7873f5;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: #555;
+    }
+    .first-letter::first-letter {
+    text-transform: uppercase;
+  }
+  </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Analysis Report for Feed: {{ feed.name }}</h1>
-        <p><strong>Feed Type:</strong> {{ feed.type }}</p>
+  <div class="container mt-5">
 
-        <h2 class="mt-4">Crowd Counts by Zone</h2>
-        <ul class="list-group mb-4">
-            {% for zone, count in counts.items() %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{ zone }}
-                    <span class="badge bg-primary rounded-pill">{{ count }}</span>
-                </li>
-            {% endfor %}
-        </ul>
-
-        <h2>Detections</h2>
-        <ul class="list-group">
-            {% for detection in detections %}
-                <li class="list-group-item">{{ detection }}</li>
-            {% endfor %}
-        </ul>
-
-        <div class="mt-4">
-            <a href="{{ url_for('dashboard.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
-        </div>
+    <!-- Page Header -->
+    <div class="report-header shadow-sm rounded-4">
+      <h1 class="mb-2">Analysis Report</h1>
+      <h5 class="text-muted">Feed: {{ feed.name }}</h5>
+      <p><strong>Analysed on:</strong> <span id="analysisTime"></span></p>
     </div>
+
+    <!-- Feed Details -->
+    <div class="section-card shadow-sm rounded-4">
+      <h2>Feed Details</h2>
+      <div class="row">
+        <div class="col-md-6 mb-2"><span class="info-label">Feed Type:</span> {{ feed.type }}</div>
+        <div class="col-md-6 mb-2"><span class="info-label">Created By:</span> {{ feed.user.username }}</div>
+        <div class="col-md-6 mb-2"><span class="info-label">User ID:</span> {{ feed.user_id }}</div>
+        {% if feed.type == 'video' %}
+        <div class="col-md-6 mb-2"><span class="info-label">Feed URL:</span> 
+          <a href="{{ url_for('static', filename='videos/' + feed.video_filename) }}" target="_blank">{{ feed.video_filename }}</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Crowd Counts -->
+    <div class="section-card shadow-sm rounded-4">
+      <h2>Crowd Counts by Zone</h2>
+      <div class="row row-cols-1 row-cols-md-2 g-3">
+        {% for zone, count in counts.items() %}
+        <div class="col">
+          <div class="card text-center h-100 shadow-sm">
+            <div class="card-body">
+              <h4 class="card-title first-letter">{{ zone }}</h4>
+              <h1 class="text-primary">{{ count }}</h1>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="d-flex justify-content-between mt-4 mb-5">
+      <a href="{{ url_for('dashboard.dashboard') }}" class="btn btn-outline-primary btn-lg" >
+        ← Back to Dashboard
+      </a>
+      <button type="button" class="creative-btn gradient-animate no-print btn-lg" onclick="window.print()">
+        🖨️ Print as PDF
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    document.getElementById("analysisTime").textContent = new Date().toLocaleString();
+  </script>
 </body>
 </html>

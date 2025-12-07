@@ -3,7 +3,7 @@ class ToastManager {
     constructor() {
         this.container = null;
         // Init on DOM ready
-        if (document.readyState === 'loading') {
+        if (document.readyState === 'loading' || !document.body) {
             document.addEventListener('DOMContentLoaded', () => this.init());
         } else {
             this.init();

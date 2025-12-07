@@ -30,6 +30,25 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleBtn.innerHTML = '◁';
     toggleBtn.title = 'Hide Sidebar';
   }
+
+  // Function to update sidebar based on screen size
+  const updateSidebar = () => {
+    if (window.innerWidth < 981) {
+      if (sidebarVisible) {
+        toggleSidebar();
+      }
+    } else {
+      if (!sidebarVisible) {
+        toggleSidebar();
+      }
+    }
+  };
+
+  // Check on load
+  updateSidebar();
+
+  // Check on resize
+  window.addEventListener('resize', updateSidebar, { passive: true });
 });
 
 // Expose globally if needed
