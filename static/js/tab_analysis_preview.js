@@ -95,89 +95,6 @@ async function updateTabAnalysisData(feedId) {
   }
 }
 
-// Initialize Gauge Chart
-// function initGaugeChart() {
-//   const data = [{
-//     type: "indicator",
-//     mode: "gauge+number",
-//     value: 0,
-//     title: { text: "Total Occupancy" },
-//     gauge: {
-//       axis: { range: [0, 100] },
-//       bar: { color: "darkblue" },
-//       bgcolor: "white",
-//       borderwidth: 2,
-//       bordercolor: "gray",
-//       steps: [
-//         { range: [0, 50], color: "lightgreen" },
-//         { range: [50, 80], color: "yellow" },
-//         { range: [80, 100], color: "red" }
-//       ]
-//     }
-//   }];
-
-//   const layout = {
-//     width: 300,
-//     height: 250,
-//     margin: { t: 25, r: 25, l: 25, b: 25 }
-//   };
-
-//   Plotly.newPlot('gaugeChart', data, layout);
-// }
-
-// Update Gauge Chart
-// function updateGaugeChart(total) {
-//   const update = {
-//     value: [total]
-//   };
-//   Plotly.update('gaugeChart', update);
-// }
-
-// Initialize Pie Chart
-// function initPieChart() {
-//   const data = [{
-//     type: "pie",
-//     values: [1],
-//     labels: ["No Data"],
-//     textinfo: "label+percent",
-//     insidetextorientation: "radial"
-//   }];
-
-//   const layout = {
-//     height: 300,
-//     margin: { t: 0, r: 0, l: 0, b: 0 }
-//   };
-
-//   Plotly.newPlot('pieChart', data, layout);
-// }
-
-// Update Pie Chart
-// function updatePieChart(zones, total) {
-//   const labels = Object.keys(zones);
-//   const values = Object.values(zones);
-
-//   // Calculate "other" as total minus sum of zone counts
-//   const zoneSum = values.reduce((sum, val) => sum + val, 0);
-//   const other = total - zoneSum;
-
-//   if (other > 0) {
-//     labels.push("Other");
-//     values.push(other);
-//   }
-
-//   if (labels.length === 0) {
-//     labels.push("No Data");
-//     values.push(1);
-//   }
-
-//   const update = {
-//     labels: [labels],
-//     values: [values]
-//   };
-
-//   Plotly.update('pieChart', update);
-// }
-
 // Initialize Bar Chart
 function initBarChart() {
   const data = [{
@@ -244,43 +161,6 @@ function updateLineChart(times, totals) {
 
   Plotly.update('lineChart', update);
 }
-
-// Initialize Heatmap
-// function initHeatmap() {
-//   const data = [{
-//     z: [[0]],
-//     x: ['Zone 1'],
-//     y: ['Intensity'],
-//     type: 'heatmap',
-//     colorscale: 'Viridis'
-//   }];
-
-//   const layout = {
-//     title: 'Zone Intensity Heatmap',
-//     height: 400
-//   };
-
-//   Plotly.newPlot('heatmap', data, layout);
-// }
-
-// // Update Heatmap
-// function updateHeatmap(zones) {
-//   const zonesList = Object.keys(zones);
-//   const values = Object.values(zones);
-
-//   if (zonesList.length === 0) {
-//     zonesList.push("No Data");
-//     values.push(0);
-//   }
-
-//   const update = {
-//     z: [values.map(v => [v])],
-//     x: [zonesList],
-//     y: [['Intensity']]
-//   };
-
-//   Plotly.update('heatmap', update);
-// }
 
 // Initialize Curve Chart
 function initCurveChart() {

@@ -2,8 +2,16 @@ import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
+
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.abspath(os.path.join(BASE_DIR, 'database.db'))
+    # Database
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DATABASE_URL",
+        "sqlite:///" + os.path.abspath(os.path.join(BASE_DIR, "database.db")),
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key')  # Change this to something secret!
-    # SECRET_KEY = 'your-secret-key'  # Change this to something secret!
+
+    # Secrets (use env vars; keep safe fallback for local dev)
+    SECRET_KEY = os.environ.get("FLASK_SECRET_KEY", "your-flask-secret-key")
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "super-secret-jwt-key")
+
